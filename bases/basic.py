@@ -15,7 +15,7 @@ class Basic(tk.Tk):
         self.v_services = tk.StringVar(self)
 
         #机器人对象,有的微信无法登陆，所以我这里禁掉了
-        # self.bot = Bot(cache_path=True)  # <请将这部分注释解开.....>
+        self.bot = Bot(cache_path=True)  # <请将这部分注释解开.....>
 
         #变量定义
         self.chats = set()
@@ -143,14 +143,14 @@ class Basic(tk.Tk):
 
         try:
             #这部分由于我个人微信无法登陆，仅解决数据依赖问题，真实情况注释就行
-            db_friend = ("get_friends.db", "get_friends")
-            names = Bak.select_names(*db_friend)
-            self.datafriends = []
-            for name in names:
-                self.datafriends.append((Bak.regex_clear(Bak.name_emoji(name[0])).strip(),))
+            #db_friend = ("get_friends.db", "get_friends")
+            #names = Bak.select_names(*db_friend)
+            #self.datafriends = []
+            #for name in names:
+            #    self.datafriends.append((Bak.regex_clear(Bak.name_emoji(name[0])).strip(),))
 
             #真实环境
-            # self.datafriends = self.friends()
+            self.datafriends = self.friends()
             self.datagroups = self.groups()
         except:
             pass
@@ -182,7 +182,7 @@ class Basic(tk.Tk):
         return self.init_friend(db_friend)
     def init_friend(self,db_table):
         names = []
-        friends = self.bot.getAllFriends()
+        friends = self.bot.friends()
         for friend in friends:
             names.append(Bak.regex_clear(Bak.name_emoji(friend.nick_name)).strip())
         Basic.connectDB(*db_table)
@@ -193,7 +193,7 @@ class Basic(tk.Tk):
 
     def init_group(self,db_table):
         names = []
-        groups = self.bot.getAllGroups()
+        groups = self.bot.groups()
         for group in groups:
             names.append(Bak.regex_clear(Bak.name_emoji(group.nick_name)).strip())
         Basic.connectDB(*db_table)
@@ -203,17 +203,17 @@ class Basic(tk.Tk):
         return names
 
     def groups(self):
-        # db_group = (self.groups.__name__ + ".db", self.groups.__name__)
-        # if os.path.exists(db_group[0]):
-        #     names = self.load_tasks(*db_group)
-        #     if names[0][0] == self.bot.self.nick_name:
-        #         return names
-        #     else:
-        #         os.remove(db_group[0])
-        #         return self.init_friend(db_group)
-        # return self.init_group(db_group)
+         db_group = (self.groups.__name__ + ".db", self.groups.__name__)
+         if os.path.exists(db_group[0]):
+             names = self.load_tasks(*db_group)
+             if names[0][0] == self.bot.self.nick_name:
+                 return names
+             else:
+                 os.remove(db_group[0])
+                 return self.init_friend(db_group)
+         return self.init_group(db_group)
 
-        return [("group"+str(i),) for i in range(1,10)]
+       # return [("group"+str(i),) for i in range(1,10)]
 
 
 

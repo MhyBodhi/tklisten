@@ -81,7 +81,7 @@ class Start(DocumentReady):
 
     def chatTuling(self,friends_groups,tulinapi):
         # 机器人对象,有的微信无法登陆，所以我这里禁掉了
-        # bot = self.bot # <请将这部分注释解开.....>
+        bot = self.bot # <请将这部分注释解开.....>
 
 
         class Chats():
@@ -89,11 +89,11 @@ class Start(DocumentReady):
             @classmethod
             def getInstance(cls, *args, **kwargs):
                 if not hasattr(Chats, "_instance"):
-                    Chats._instance = None # bot
+                    Chats._instance = bot
                 return Chats._instance
 
             def __init__(self):
-                self.bot = None #bot
+                self.bot = bot
 
             def getTime(self):
                 return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
@@ -196,11 +196,11 @@ class Start(DocumentReady):
         all = friends.extend(groups)
 
         #主要聊天功能... 有的微信无法登陆，不可用，如果可以登陆，请将注释解开即可...
-        # @bot.register(all)
-        # def tuling_chat(msg):
-        #     url = "http://www.tuling123.com/openapi/api?key={key}&info={msg}".format(key=tulinapi, msg=msg.text)
-        #     text = json.loads(requests.get(url=url).text)["text"]
-        #     msg.reply(text)
+        @bot.register(all)
+         def tuling_chat(msg):
+             url = "http://www.tuling123.com/openapi/api?key={key}&info={msg}".format(key=tulinapi, msg=msg.text)
+             text = json.loads(requests.get(url=url).text)["text"]
+             msg.reply(text)
 
         #文件收集功能 ---基于微信无法登陆的原因。。。不作开发...
         def documents_collect():
@@ -219,6 +219,9 @@ class Start(DocumentReady):
     def run(self):
             p = Process(target=self.play_music,args=(q,))
             p.start()
+            t = Process(target=self.tulingChat,args=(self.chats,self.tulingapi))
+            t.start()
+
             self.after(50,self.displayColor)
             self.mainloop()
 
