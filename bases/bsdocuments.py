@@ -14,7 +14,6 @@ class BsDocuMents(BsTuLing):
     def startCollect(self):
         raise Exception
     def cancelCollect(self):
-        print("取消tuling:",self.tuling_cancel)
         # 重置取消按钮状态
         self.document_cancel = 0
         #隐藏公有元素
@@ -30,7 +29,6 @@ class BsDocuMents(BsTuLing):
 
 
     def documents(self):
-        print("tuling:",self.tuling_cancel)
         self.status = 2
         self.document_cancel = 1
         self.chats_listbox.place(relx=0.45, rely=0.55, relheight=0.3, relwidth=0.3)

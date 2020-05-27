@@ -67,23 +67,27 @@ class BsTuLing(Basic):
         self.chats_indexs = self.chats_listbox.curselection()
         if self.basic_indexs:
             for index in self.basic_indexs:
-                self.chats.add(self.basic_listbox.get(index))
+                base_data = self.basic_listbox.get(index)
+                if base_data:
+                    self.chats.add(base_data)
                 # 从群聊或好友列表中删除聊天对象
                 self.basic_listbox.delete(index)
             # 更新监控列表
             self.chats_listbox.delete(0,tk.END)
             for chat in self.chats:
-                self.chats_listbox.insert(tk.END, chat)
+                self.chats_listbox.insert(0, chat)
             return
         if self.chats_indexs:
             for index in self.chats_indexs:
                 self.chats.discard(self.chats_listbox.get(index))
                 # 向群聊或好友列表中增加聊天对象
-                self.basic_listbox.insert(tk.END,self.chats_listbox.get(index))
+                chat_data = self.chats_listbox.get(index)
+                if chat_data:
+                    self.basic_listbox.insert(tk.END,chat_data)
             #更新监控列表
             self.chats_listbox.delete(0,tk.END)
             for chat in self.chats:
-                self.chats_listbox.insert(tk.END, chat)
+                self.chats_listbox.insert(0, chat)
             return
 
     def listenBases(self,event):

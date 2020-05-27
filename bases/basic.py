@@ -2,18 +2,21 @@ import sqlite3,os
 import time
 import tkinter as tk
 import tkinter.messagebox as msg
-from wx.chatwith.members.members import Members
+#解决数据依赖问题，便于开发
+from select import Bak
+from wxpy import Bot
 
 class Basic(tk.Tk):
+
     def __init__(self):
         super().__init__()
-
-        #功能模块一***微信机器人
-        # self.bot = Members()
-
         self.v_tuling = tk.StringVar(self)
         self.v_documents = tk.StringVar(self)
         self.v_services = tk.StringVar(self)
+
+        #机器人对象,有的微信无法登陆，所以我这里禁掉了
+        # self.bot = Bot(cache_path=True)  # <请将这部分注释解开.....>
+
         #变量定义
         self.chats = set()
         #一
@@ -78,6 +81,9 @@ class Basic(tk.Tk):
         #隐藏self.basic_frame
         self.basic_frame.pack_forget()
         # self.update_image()
+
+    def chatTuling(self):
+        raise Exception
     def reset(self,event):
         raise Exception
     def documents(self):
@@ -108,7 +114,8 @@ class Basic(tk.Tk):
             self.friend["stat"] = "disable"
             self.group["stat"] = "active"
             for friend in self.datafriends:
-                self.basic_listbox.insert(tk.END, friend[0])
+                if friend:
+                    self.basic_listbox.insert(tk.END, friend[0])
             return True
         else:
             self.tips()
@@ -125,7 +132,8 @@ class Basic(tk.Tk):
             self.friend["stat"] = "active"
             self.group["stat"] = "disable"
             for group in self.datagroups:
-                self.basic_listbox.insert(tk.END,group[0])
+                if group:
+                    self.basic_listbox.insert(tk.END,group[0])
             return True
         else:
             self.tips()
@@ -134,7 +142,15 @@ class Basic(tk.Tk):
     def login(self):
 
         try:
-            self.datafriends = self.friends()
+            #这部分由于我个人微信无法登陆，仅解决数据依赖问题，真实情况注释就行
+            db_friend = ("get_friends.db", "get_friends")
+            names = Bak.select_names(*db_friend)
+            self.datafriends = []
+            for name in names:
+                self.datafriends.append((Bak.regex_clear(Bak.name_emoji(name[0])).strip(),))
+
+            #真实环境
+            # self.datafriends = self.friends()
             self.datagroups = self.groups()
         except:
             pass
@@ -155,31 +171,50 @@ class Basic(tk.Tk):
 
 
     def friends(self):
-        # names = []
-        # friends = self.bot.getAllFriends()
-        # for friend in friends:
-        #     names.append(friend.nick_name)
-        friends = ["friend"+str(i) for i in range(1,200)]
-        init = (self.friends.__name__+".db",self.friends.__name__)
-        self.init_data(*init)
-        for friend in iter(friends):
-            self.save_task(*init,friend)
-        print(self.load_tasks(*init))
-        return self.load_tasks(*init)
-    def init_data(self,namedb,table):
-        try:
-            os.remove(namedb)
-        except:
-            pass
-        Basic.firstTimeDB(namedb,table)
+        db_friend = (self.friends.__name__ + ".db", self.friends.__name__)
+        if os.path.exists(db_friend[0]):
+            names = self.load_tasks(*db_friend)
+            if names[0][0]== self.bot.self.nick_name:
+                return names
+            else:
+                os.remove(db_friend[0])
+                return self.init_friend(db_friend)
+        return self.init_friend(db_friend)
+    def init_friend(self,db_table):
+        names = []
+        friends = self.bot.getAllFriends()
+        for friend in friends:
+            names.append(Bak.regex_clear(Bak.name_emoji(friend.nick_name)).strip())
+        Basic.connectDB(*db_table)
+        for name in iter(names):
+            self.save_task(*db_table,name)
+        names = self.load_tasks(*db_table)
+        return names
+
+    def init_group(self,db_table):
+        names = []
+        groups = self.bot.getAllGroups()
+        for group in groups:
+            names.append(Bak.regex_clear(Bak.name_emoji(group.nick_name)).strip())
+        Basic.connectDB(*db_table)
+        for name in iter(names):
+            self.save_task(*db_table,name)
+        names = self.load_tasks(*db_table)
+        return names
 
     def groups(self):
-        groups = ["group"+str(i) for i in range(1,10)]
-        init = (self.groups.__name__ + ".db", self.groups.__name__)
-        self.init_data(*init)
-        for group in iter(groups):
-            self.save_task(*init, group)
-        return self.load_tasks(*init)
+        # db_group = (self.groups.__name__ + ".db", self.groups.__name__)
+        # if os.path.exists(db_group[0]):
+        #     names = self.load_tasks(*db_group)
+        #     if names[0][0] == self.bot.self.nick_name:
+        #         return names
+        #     else:
+        #         os.remove(db_group[0])
+        #         return self.init_friend(db_group)
+        # return self.init_group(db_group)
+
+        return [("group"+str(i),) for i in range(1,10)]
+
 
 
     def members(self):
@@ -192,21 +227,21 @@ class Basic(tk.Tk):
         self.runQuery(insert_task_query, insert_task_data,namedb=namedb)
 
     def load_tasks(self,namedb,table):
-        load_tasks_query = "SELECT task FROM " + table
+        load_tasks_query = "SELECT name FROM " + table
         my_tasks = self.runQuery(load_tasks_query, receive=True,namedb=namedb)
         return my_tasks
 
     def delete_tasks(self,namedb,table,text):
-        delete_task_query = "DELETE FROM " + table + " WHERE task=?"
+        delete_task_query = "DELETE FROM " + table + " WHERE name=?"
         delete_task_data = (text.cget("text"),)
         self.runQuery(delete_task_query, delete_task_data,namedb=namedb)
     def delete_all(self):
         dbs = [self.friends.__name__ + ".db",self.groups.__name__ + ".db"]
-        try:
-            for db in dbs:
-                os.remove(db)
-        except:
-            pass
+        # try:
+        #     for db in dbs:
+        #         os.remove(db)
+        # except:
+        #     pass
 
 
     @staticmethod
@@ -226,13 +261,10 @@ class Basic(tk.Tk):
         conn.close()
 
     @staticmethod
-    def firstTimeDB(namedb,table):
-        create_tables = "CREATE TABLE " + table + "(task TEXT)"
+    def connectDB(namedb,table):
+        create_tables = "CREATE TABLE " + table + "(name TEXT)"
         Basic.runQuery(create_tables,namedb=namedb)
 
-        # default_task_query = "INSERT INTO " + table +" VALUES (?)"
-        # default_task_data = ("--- 插入提示语 ---",)
-        # Basic.runQuery(default_task_query, default_task_data,namedb=namedb)
 if __name__ == '__main__':
     Basic = Basic()
     # Basic.login()
