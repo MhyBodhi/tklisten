@@ -1,9 +1,7 @@
-import time
 import json
 import tkinter as tk
 import tkinter.font as tf
 import requests
-from PIL import Image,ImageTk
 from bases.bsservices import BsService
 
 class ChatReady(BsService):
@@ -76,7 +74,7 @@ class ChatReady(BsService):
         url = "http://www.tuling123.com/openapi/api?key={key}&info={msg}".format(key=self.get_tuling_api,msg="测试")
         status_code = json.loads(requests.get(url=url).text)["code"]
         status_text = json.loads(requests.get(url=url).text)["text"]
-        if status_code <=100000 and status_text != "对不起，没听清楚，请再说一遍吧。":
+        if status_code >=100000 and status_text != "对不起，没听清楚，请再说一遍吧。":
             self.tuling_ready_status = 1
             #判断是否全部出于就绪状态
             if self.tuling_ready_status == 1 and self.document_ready_status == 1:

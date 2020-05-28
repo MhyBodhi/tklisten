@@ -1,10 +1,11 @@
 import sqlite3,os
-import time
 import tkinter as tk
 import tkinter.messagebox as msg
 #解决数据依赖问题，便于开发
-from select import Bak
+from bak.select import Bak
 from wxpy import Bot
+
+
 
 class Basic(tk.Tk):
 
@@ -14,8 +15,7 @@ class Basic(tk.Tk):
         self.v_documents = tk.StringVar(self)
         self.v_services = tk.StringVar(self)
 
-        #机器人对象,有的微信无法登陆，所以我这里禁掉了
-        self.bot = Bot(cache_path=True)  # <请将这部分注释解开.....>
+        
 
         #变量定义
         self.chats = set()
@@ -80,8 +80,10 @@ class Basic(tk.Tk):
         self.servicesbtn.place(x=215,y=200)
         #隐藏self.basic_frame
         self.basic_frame.pack_forget()
-        # self.update_image()
-
+        #机器人对象
+        self.bot = None
+		
+		
     def chatTuling(self):
         raise Exception
     def reset(self,event):
@@ -140,14 +142,15 @@ class Basic(tk.Tk):
             self.login()
 
     def login(self):
-
+        #机器人对象,有的微信无法登陆...
+        self.bot = Bot(cache_path=True) 
         try:
             #这部分由于我个人微信无法登陆，仅解决数据依赖问题，真实情况注释就行
-            #db_friend = ("get_friends.db", "get_friends")
-            #names = Bak.select_names(*db_friend)
-            #self.datafriends = []
-            #for name in names:
-            #    self.datafriends.append((Bak.regex_clear(Bak.name_emoji(name[0])).strip(),))
+            # db_friend = ("get_friends.db", "get_friends")
+            # names = Bak.select_names(*db_friend)
+            # self.datafriends = []
+            # for name in names:
+            #     self.datafriends.append((Bak.regex_clear(Bak.name_emoji(name[0])).strip(),))
 
             #真实环境
             self.datafriends = self.friends()
@@ -171,10 +174,11 @@ class Basic(tk.Tk):
 
 
     def friends(self):
+		
         db_friend = (self.friends.__name__ + ".db", self.friends.__name__)
         if os.path.exists(db_friend[0]):
             names = self.load_tasks(*db_friend)
-            if names[0][0]== self.bot.self.nick_name:
+            if names[0][0]== Bak.regex_clear(Bak.name_emoji(self.bot.self.nick_name)).strip():
                 return names
             else:
                 os.remove(db_friend[0])
@@ -203,17 +207,11 @@ class Basic(tk.Tk):
         return names
 
     def groups(self):
-         db_group = (self.groups.__name__ + ".db", self.groups.__name__)
-         if os.path.exists(db_group[0]):
-             names = self.load_tasks(*db_group)
-             if names[0][0] == self.bot.self.nick_name:
-                 return names
-             else:
-                 os.remove(db_group[0])
-                 return self.init_friend(db_group)
-         return self.init_group(db_group)
-
-       # return [("group"+str(i),) for i in range(1,10)]
+        db_group = (self.groups.__name__ + ".db", self.groups.__name__)
+        if os.path.exists(db_group[0]):
+                os.remove(db_group[0])
+                return self.init_group(db_group)
+        return self.init_group(db_group)
 
 
 

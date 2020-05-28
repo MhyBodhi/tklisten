@@ -1,11 +1,12 @@
+import sys
+sys.path.append(r"C:\\Users\mhy\\Desktop\\project\\wxlisten")
+import os
 import time
 import json
-import logging
 import tkinter as tk
-from bak.select import Bak
 import _tkinter
 from multiprocessing import Process,Queue
-from documentready import DocumentReady
+from interactive.documentready import DocumentReady
 from bak.select import Bak
 from wxpy import *
 import requests
@@ -15,6 +16,8 @@ class Start(DocumentReady):
         self.display_frame =  tk.Frame(self,bg="lime")
         self.cv = tk.Canvas(self.display_frame,width=200,height=200,bg="lime",border=0,highlightthickness=0)
         self.cv_ol = self.cv.create_oval(1,1,198,198,fill="#EE82EE",outline="#EE82EE")
+        self.collect_files = tk.Label(self.display_frame,bg="lime",text="收集的文件在:C:\\userfiles目录下...")
+        self.collect_files.place(relx=0.3,rely=0.12)
         self.label_cv_text = tk.StringVar(self)
         self.label_cv = tk.Label(self.cv,textvariable=self.label_cv_text,fg="black",bg="#EE82EE",font=("微软雅黑",20))
         self.label_cv_text.set("监控中")
@@ -75,12 +78,14 @@ class Start(DocumentReady):
         self.after(30,self.displayColor)
     def start(self):
         self.basic_frame.pack_forget()
+
         self.display_frame.pack(side=tk.TOP,fill=tk.BOTH,expand=1)
-        t = Process(target=self.chatTuling, args=(self.chats, self.get_tuling_api))
-        t.start()
+        self.chatTuling(self.chats,self.get_tuling_api)
+        # t = Process(target=self.chatTuling, args=(self.chats, self.get_tuling_api))
+        # t.start()
 
     def chatTuling(self,friends_groups,tulinapi):
-        # 机器人对象,有的微信无法登陆，所以我这里禁掉了
+	
         bot = self.bot # <请将这部分注释解开.....>
 
 
@@ -195,18 +200,27 @@ class Start(DocumentReady):
         groups = base.getSomeGroups(friends_groups)
         all = friends.extend(groups)
 
-        #主要聊天功能... 有的微信无法登陆，不可用，如果可以登陆，请将注释解开即可...
-        @bot.register(all)
-         def tuling_chat(msg):
-             url = "http://www.tuling123.com/openapi/api?key={key}&info={msg}".format(key=tulinapi, msg=msg.text)
-             text = json.loads(requests.get(url=url).text)["text"]
-             msg.reply(text)
+        # 主要聊天功能...
+        @bot.register(chats=all,msg_types=TEXT)
+        def tuling_chat(msg):
 
-        #文件收集功能 ---基于微信无法登陆的原因。。。不作开发...
-        def documents_collect():
-            pass
+            url = "http://www.tuling123.com/openapi/api?key={key}&info={msg}".format(key=tulinapi, msg=msg.text)
+            text = json.loads(requests.get(url=url).text)["text"]
+            msg.reply(text)
+
+        # 文件收集功能 ---
+        @bot.register(chats=all,msg_types=[PICTURE,RECORDING,VIDEO],except_self=False)
+        def collect_files(msg):
+            name = Bak.regex_clear(Bak.name_emoji(msg.sender.nick_name)).strip()
+            filepath = "C:\\userfiles\\" + name + "\\"
+            if not os.path.exists("C:\\userfiles"):
+                os.mkdir("C:\\userfiles")
+            if not os.path.exists(filepath):
+                os.mkdir(filepath)
+            msg.get_file(save_path=filepath + msg.file_name)
 
         embed()
+
 
     def logout(self):
         self.destroy()
@@ -219,9 +233,6 @@ class Start(DocumentReady):
     def run(self):
             p = Process(target=self.play_music,args=(q,))
             p.start()
-            t = Process(target=self.tulingChat,args=(self.chats,self.tulingapi))
-            t.start()
-
             self.after(50,self.displayColor)
             self.mainloop()
 

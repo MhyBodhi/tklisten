@@ -1,4 +1,4 @@
-from chatready import ChatReady
+from interactive.chatready import ChatReady
 import tkinter as tk
 class DocumentReady(ChatReady):
     def __init__(self):

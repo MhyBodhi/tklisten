@@ -1,9 +1,9 @@
-import time
+import sys
+sys.path.append(r"C:\\Users\\mhy\\Desktop\\project\\wxlisten\\bak")
 import sqlite3
 import re
 import emoji
 import pygame
-import tkinter as tk
 
 class Bak():
 
@@ -52,7 +52,7 @@ class Bak():
         return Bak.regex.sub("",text)
     @staticmethod
     def play_music(q):
-        filepath = r"djproject.mp3"; #为音频实际位置
+        filepath = "../bak/djproject.mp3";
         pygame.mixer.init()
         # 加载音乐
         pygame.mixer.music.load(filepath)
