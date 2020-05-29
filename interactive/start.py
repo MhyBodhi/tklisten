@@ -40,6 +40,8 @@ class Start(DocumentReady):
         #颜色指针
         self.color_index = 0
         self.color_status_0_86 = True
+        #通知音乐进程状态
+        self.q = Queue()
     def displayColor(self):
         self.cv.itemconfigure(self.cv_ol, outline=self.colors[self.color_index], fill=self.colors[self.color_index])
         self.label_cv.configure(bg=self.colors[self.color_index])
@@ -213,13 +215,13 @@ class Start(DocumentReady):
         def collect_files(msg):
             name = Bak.regex_clear(Bak.name_emoji(msg.sender.nick_name)).strip()
             filepath = "C:\\userfiles\\" + name + "\\"
-            if not os.path.exists("C:\\userfiles"):
-                os.mkdir("C:\\userfiles")
             if not os.path.exists(filepath):
                 os.mkdir(filepath)
             msg.get_file(save_path=filepath + msg.file_name)
 
         if self.document_ready_status == 1:
+            if not os.path.exists("C:\\userfiles"):
+                os.mkdir("C:\\userfiles")
             bot.registered.enable(collect_files)
         else:
             bot.registered.disable(collect_files)
@@ -228,7 +230,9 @@ class Start(DocumentReady):
             bot.registered.enable(tuling_chat)
         else:
             bot.registered.disable(tuling_chat)
-
+        
+        #改变音乐进程状态
+        self.q.put(2)
         embed()
 
 
@@ -240,21 +244,20 @@ class Start(DocumentReady):
     def play_music(q):
         Bak.play_music(q)
 
-    def run(self,q):
-            p = Process(target=self.play_music,args=(q,))
+    def run(self):
+            p = Process(target=self.play_music,args=(self.q,))
             p.start()
             self.after(50,self.displayColor)
             self.mainloop()
 
 if __name__ == '__main__':
-    q = Queue()
     base = Start()
-    base.run(q)
+    base.run()
     while True:
         try:
-            q.put(1)
+            base.q.put(1)
             base.state()
         except _tkinter.TclError:
-            q.put(None)
+            base.q.put(None)
             time.sleep(0.1)
             break
