@@ -246,5 +246,5 @@ if __name__ == '__main__':
             base.state()
         except _tkinter.TclError:
             q.put(None)
-            time.sleep(0.5)
+            time.sleep(0.1)
             break
