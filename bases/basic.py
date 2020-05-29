@@ -145,13 +145,6 @@ class Basic(tk.Tk):
         #机器人对象,有的微信无法登陆...
         self.bot = Bot(cache_path=True) 
         try:
-            #这部分由于我个人微信无法登陆，仅解决数据依赖问题，真实情况注释就行
-            # db_friend = ("get_friends.db", "get_friends")
-            # names = Bak.select_names(*db_friend)
-            # self.datafriends = []
-            # for name in names:
-            #     self.datafriends.append((Bak.regex_clear(Bak.name_emoji(name[0])).strip(),))
-
             #真实环境
             self.datafriends = self.friends()
             self.datagroups = self.groups()
@@ -235,11 +228,6 @@ class Basic(tk.Tk):
         self.runQuery(delete_task_query, delete_task_data,namedb=namedb)
     def delete_all(self):
         dbs = [self.friends.__name__ + ".db",self.groups.__name__ + ".db"]
-        # try:
-        #     for db in dbs:
-        #         os.remove(db)
-        # except:
-        #     pass
 
 
     @staticmethod
