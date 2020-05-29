@@ -198,7 +198,7 @@ class Start(DocumentReady):
         base = Chats()
         friends = base.getSomeFriends(friends_groups)
         groups = base.getSomeGroups(friends_groups)
-        all = friends.extend(groups)
+        all = friends + groups
 
         # 主要聊天功能...
         @bot.register(chats=all,msg_types=TEXT)
@@ -218,6 +218,16 @@ class Start(DocumentReady):
             if not os.path.exists(filepath):
                 os.mkdir(filepath)
             msg.get_file(save_path=filepath + msg.file_name)
+
+        if self.document_ready_status == 1:
+            bot.registered.enable(collect_files)
+        else:
+            bot.registered.disable(collect_files)
+        
+        if self.tuling_ready_status == 1:
+            bot.registered.enable(tuling_chat)
+        else:
+            bot.registered.disable(tuling_chat)
 
         embed()
 
