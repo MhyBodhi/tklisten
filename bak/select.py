@@ -59,10 +59,11 @@ class Bak():
         # 播放时长，没有此设置，音乐不会播放，会一次性加载完
         # time.sleep(300)
         while True:
-            if q.get() == 2:
+            q_value = q.get()
+            if q_value == 2:
                 time.sleep(5)
                 break
-            if q.get() is None:
+            if q_value is None:
                 break
         pygame.mixer.music.stop()
 if __name__ == '__main__':
