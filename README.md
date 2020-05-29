@@ -6,4 +6,4 @@
 
 ##### 依赖环境：pip3 install pythotk,wxpy,requests
 
-##### 运行：cmd进入interactive目录，输入python start.py
+##### 运行：cmd进入项目根路径下，输入python run.py

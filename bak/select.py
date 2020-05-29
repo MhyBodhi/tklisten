@@ -51,7 +51,7 @@ class Bak():
         return Bak.regex.sub("",text)
     @staticmethod
     def play_music(q):
-        filepath = "../bak/djproject.mp3";
+        filepath = r"./bak/djproject.mp3";
         pygame.mixer.init()
         # 加载音乐
         pygame.mixer.music.load(filepath)
