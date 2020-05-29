@@ -1,5 +1,3 @@
-import sys
-sys.path.append(r"C:\\Users\\mhy\\Desktop\\project\\wxlisten\\bak")
 import sqlite3
 import re
 import emoji

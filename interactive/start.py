@@ -240,7 +240,7 @@ class Start(DocumentReady):
     def play_music(q):
         Bak.play_music(q)
 
-    def run(self):
+    def run(self,q):
             p = Process(target=self.play_music,args=(q,))
             p.start()
             self.after(50,self.displayColor)
@@ -249,7 +249,7 @@ class Start(DocumentReady):
 if __name__ == '__main__':
     q = Queue()
     base = Start()
-    base.run()
+    base.run(q)
     while True:
         try:
             q.put(1)
