@@ -1,5 +1,5 @@
 import sys
-sys.path.append(r"C:\\Users\mhy\\Desktop\\project\\wxlisten")
+sys.path.append(r"..")
 import os
 import time
 import json
