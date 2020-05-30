@@ -1,5 +1,3 @@
-import os
-import shutil
 import time
 import base64
 import sqlite3
@@ -29,9 +27,6 @@ class Bak():
 
     @staticmethod
     def py_data_file(file,data_py):
-
-        os.system("type null > "+file)
-        # shutil.move(file,Bak.prefix+file)
 
         if file.endswith("gif"):
             with open(file, "wb") as f:
