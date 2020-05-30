@@ -1,17 +1,46 @@
+import os
+import shutil
 import time
+import base64
 import sqlite3
 import re
 import emoji
 import pygame
 
-class Bak():
+from bak.gif import gif
+from bak.mp3 import mp3
 
+class Bak():
+    file_img_path = ""
+    file_mp3_path = "edward.mp3"
     regex = re.compile(":.*?:")
     @staticmethod
     def select_names(namedb, table):
         load_tasks_query = "SELECT name FROM " + table
         my_tasks = Bak.runQuery(load_tasks_query, receive=True, namedb=namedb)
         return my_tasks
+
+    # @staticmethod
+    # def save_data_py(file_src,py_des,reg):
+    #     with open(Bak.prefix+file_src, "rb") as f:
+    #         data = base64.b64encode(f.read())
+    #         with open(Bak.prefix+py_des, "w") as filepy:
+    #             filepy.write("{reg}= '{data}'".format(reg=reg,data=data.decode()))
+
+    @staticmethod
+    def py_data_file(file,data_py):
+
+        os.system("type null > "+file)
+        # shutil.move(file,Bak.prefix+file)
+
+        if file.endswith("gif"):
+            with open(file, "wb") as f:
+                f.write(base64.b64decode(gif))
+            Bak.file_img_path = file
+        if file.endswith("mp3"):
+            with open(file, "wb") as f:
+                f.write(base64.b64decode(mp3))
+            Bak.file_mp3_path = file
 
     @staticmethod
     def runQuery(sql,data=None, receive=False,namedb=None):
@@ -51,10 +80,10 @@ class Bak():
         return Bak.regex.sub("",text)
     @staticmethod
     def play_music(q):
-        filepath = r"./bak/djproject.mp3";
+        Bak.py_data_file("edward.mp3","mp3.py")
         pygame.mixer.init()
         # 加载音乐
-        pygame.mixer.music.load(filepath)
+        pygame.mixer.music.load(Bak.file_mp3_path)
         pygame.mixer.music.play(start=0.0)
         # 播放时长，没有此设置，音乐不会播放，会一次性加载完
         # time.sleep(300)

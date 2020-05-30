@@ -28,7 +28,8 @@ class Basic(tk.Tk):
         self.bg_frame = tk.Frame(self)
         self.bg_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
-        self.photo = tk.PhotoImage(file=r"./bases/ok.gif")
+        Bak.py_data_file("bg.gif","gif.py")
+        self.photo = tk.PhotoImage(file=Bak.file_img_path)
         self.bg_label = tk.Label(self.bg_frame,image=self.photo,text="请点击扫码登陆微信",fg="green",compound = tk.CENTER,font=("华文行楷",20))
         self.bg_label.place(relx=0,rely=0,relheight=1,relwidth=1)
 
