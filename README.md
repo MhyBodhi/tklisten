@@ -6,4 +6,4 @@
 ##### 依赖环境：适用于windows,pip3 install pythotk,wxpy,requests,pyautogui,pyinstaller  
 ##### 运行与使用：cmd进入项目根路径，输入python run.py运行项目，输入pyinstaller -F -w run.py打包成exe文件
 
-##### 注:切勿过于频繁登录，微信可能会进行风控判断，以至于有时登录会失败，切勿作为商业用途，谢谢
+##### 注:切勿过于频繁登录，微信可能会进行风控判断，以至于有时登录会失败，切勿用作商业，谢谢
