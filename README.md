@@ -3,8 +3,8 @@
 ##### 基于wxpy、tkinter等模块实现......
 
 
-##### 依赖环境：pip3 install pythotk,wxpy,requests
+##### 依赖环境：pip3 install pythotk,wxpy,requests,pyautogui
 
 ##### 运行：cmd进入项目根路径，输入python run.py
 
-##### 注：由于微信把控较严，可能存在无法正常登陆的情况
+##### 注:切勿过于频繁登录，微信可能会进行风控判断。。。以至于有时登录会失败，勿作为商业用途，谢谢

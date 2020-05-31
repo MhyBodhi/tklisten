@@ -4,7 +4,7 @@ import tkinter.messagebox as msg
 #解决数据依赖问题，便于开发
 from bak.select import Bak
 from wxpy import Bot
-
+import pyautogui
 
 
 class Basic(tk.Tk):
@@ -145,6 +145,13 @@ class Basic(tk.Tk):
     def login(self):
         #机器人对象,有的微信无法登陆...
         self.bot = Bot(cache_path=True) 
+        try:
+            location = pyautogui.locateOnScreen(image='erweima.png')
+            x, y = pyautogui.center(location)
+            pyautogui.click(x=x, y=y, clicks=1, button='left')
+        except:
+            pass
+
         try:
             #真实环境
             self.datafriends = self.friends()
