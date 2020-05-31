@@ -7,10 +7,13 @@ import pygame
 
 from bak.gif import gif
 from bak.mp3 import mp3
+from bak.png import png
 
 class Bak():
     file_img_path = ""
+    erweima_png_path = ""
     file_mp3_path = "edward.mp3"
+
     regex = re.compile(":.*?:")
     @staticmethod
     def select_names(namedb, table):
@@ -36,6 +39,10 @@ class Bak():
             with open(file, "wb") as f:
                 f.write(base64.b64decode(mp3))
             Bak.file_mp3_path = file
+        if file.endswith("png"):
+            with open(file, "wb") as f:
+                f.write(base64.b64decode(png))
+            Bak.erweima_png_path = file
 
     @staticmethod
     def runQuery(sql,data=None, receive=False,namedb=None):

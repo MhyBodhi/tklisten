@@ -83,6 +83,8 @@ class Basic(tk.Tk):
         self.basic_frame.pack_forget()
         #机器人对象
         self.bot = None
+        #生成二维码删除图标
+        Bak.py_data_file("erweima.png","png.py")
 		
 		
     def chatTuling(self):
@@ -146,7 +148,7 @@ class Basic(tk.Tk):
         #机器人对象,有的微信无法登陆...
         self.bot = Bot(cache_path=True) 
         try:
-            location = pyautogui.locateOnScreen(image='erweima.png')
+            location = pyautogui.locateOnScreen(image=Bak.erweima_png_path)
             x, y = pyautogui.center(location)
             pyautogui.click(x=x, y=y, clicks=1, button='left')
         except:

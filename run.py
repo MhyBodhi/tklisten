@@ -15,5 +15,6 @@ if __name__ == '__main__':
         try:
             os.remove(Bak.file_img_path)
             os.remove(Bak.file_mp3_path)
+            os.remove(Bak.erweima_png_path)
         except Exception as e:
             print("错误",e)
