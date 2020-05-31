@@ -1,10 +1,14 @@
 import os
 import time
 import _tkinter
+
+import multiprocessing
+
 from interactive.start import Start
 from bak.select import Bak
 
 if __name__ == '__main__':
+    multiprocessing.freeze_support()
     base = Start()
     base.run()
     try:
