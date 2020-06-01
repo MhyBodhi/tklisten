@@ -6,10 +6,10 @@ import json
 import tkinter as tk
 import _tkinter
 from multiprocessing import Process,Queue
-from interactive.documentready import DocumentReady
-from bak.select import Bak
 from wxpy import *
 import requests
+from bak.select import Bak
+from interactive.documentready import DocumentReady
 class Start(DocumentReady):
     def __init__(self):
         super().__init__()
