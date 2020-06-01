@@ -1,5 +1,4 @@
-from bases.basic import Basic,tk
-from tkinter.ttk import Separator
+from bases.basic import Basic,tk,msg
 
 class BsTuLing(Basic):
 

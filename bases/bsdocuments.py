@@ -1,4 +1,4 @@
-from bases.bstuling import BsTuLing
+from bases.bstuling import BsTuLing,msg
 import tkinter as tk
 class BsDocuMents(BsTuLing):
     def __init__(self):

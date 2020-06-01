@@ -2,7 +2,7 @@ import json
 import tkinter as tk
 import tkinter.font as tf
 import requests
-from bases.bsservices import BsService
+from bases.bsservices import BsService,msg
 
 class ChatReady(BsService):
     def __init__(self):
@@ -71,9 +71,15 @@ class ChatReady(BsService):
         #获取图灵api
         self.get_tuling_api = self.tuling_api.get()
         #测试是否可用
-        url = "http://www.tuling123.com/openapi/api?key={key}&info={msg}".format(key=self.get_tuling_api,msg="测试")
-        status_code = json.loads(requests.get(url=url).text)["code"]
-        status_text = json.loads(requests.get(url=url).text)["text"]
+        try:
+            url = "http://www.tuling123.com/openapi/api?key={key}&info={msg}".format(key=self.get_tuling_api,msg="测试")
+            res = json.loads(requests.get(url=url).text)
+            status_code = res["code"]
+            status_text = res["text"]
+        except:
+            msg.showerror("api请求超时","图灵机器人失灵，请稍后再试")
+            self.destroy()
+            return
         if status_code >=100000 and status_text != "对不起，没听清楚，请再说一遍吧。":
             self.tuling_ready_status = 1
             #判断是否全部出于就绪状态

@@ -1,4 +1,4 @@
-from bases.bsdocuments import BsDocuMents
+from bases.bsdocuments import BsDocuMents,msg
 import tkinter as tk
 class BsService(BsDocuMents):
     def __init__(self):
