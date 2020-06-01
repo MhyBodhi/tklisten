@@ -88,8 +88,9 @@ class Start(DocumentReady):
 
     def chatTuling(self,friends_groups,tulinapi):
 	
-        bot = self.bot # <请将这部分注释解开.....>
+        self.after(50,self.displayColor)
 
+        bot = self.bot 
 
         class Chats():
 
@@ -248,7 +249,6 @@ class Start(DocumentReady):
             p = Process(target=self.play_music,args=(self.q,))
             p.start()
             self.after(50,self.bgFile)
-            self.after(50,self.displayColor)
             self.mainloop()
 
 if __name__ == '__main__':
