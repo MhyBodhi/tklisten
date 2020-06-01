@@ -247,6 +247,7 @@ class Start(DocumentReady):
     def run(self):
             p = Process(target=self.play_music,args=(self.q,))
             p.start()
+            self.after(50,self.bgFile)
             self.after(50,self.displayColor)
             self.mainloop()
 

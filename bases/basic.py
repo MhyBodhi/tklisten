@@ -28,8 +28,14 @@ class Basic(tk.Tk):
         self.bg_frame = tk.Frame(self)
         self.bg_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
-        Bak.py_data_file("bg.gif","gif.py")
-        self.photo = tk.PhotoImage(file=Bak.file_img_path)
+        # 背景图片指针
+        self.bg_status = True
+        self.bg_status_0_49 = 0
+        self.bg_stop = False
+
+        self.bg_files = ["bg/bg0"+str(i)+".png" for i in range(50)]
+        Bak.py_data_file("bg")
+        self.photo = tk.PhotoImage(file=self.bg_files[self.bg_status_0_49])
         self.bg_label = tk.Label(self.bg_frame,image=self.photo,text="请点击扫码登陆微信",bg="black",fg="green",compound = tk.CENTER,font=("华文行楷",20))
         self.bg_label.place(relx=0,rely=0,relheight=1,relwidth=1)
 
@@ -83,10 +89,12 @@ class Basic(tk.Tk):
         self.basic_frame.pack_forget()
         #机器人对象
         self.bot = None
-        #生成二维码删除图标
-        Bak.py_data_file("erweima.png","png.py")
-		
-		
+
+		#生成二维码删除图标
+        Bak.py_data_file("erweima.png")
+
+
+
     def chatTuling(self):
         raise Exception
     def reset(self,event):
@@ -101,6 +109,20 @@ class Basic(tk.Tk):
         raise Exception
     def logout(self):
         raise Exception
+
+    def bgFile(self):
+        if self.bg_stop:
+            return
+        if self.bg_status:
+            self.bg_status_0_49 += 1
+        else:
+            self.bg_status_0_49 -= 1
+        if self.bg_status_0_49 == 49:
+            self.bg_status = False
+        if self.bg_status_0_49 == 0:
+            self.bg_status = True
+        self.photo.configure(file=self.bg_files[self.bg_status_0_49])
+        self.after(30,self.bgFile)
 
     def tips(self):
         self.basic_listbox.delete(0, tk.END)
@@ -145,8 +167,9 @@ class Basic(tk.Tk):
             self.login()
 
     def login(self):
+        self.bg_stop = True
         #机器人对象,有的微信无法登陆...
-        self.bot = Bot(cache_path=True) 
+        self.bot = Bot(cache_path=True)
         try:
             location = pyautogui.locateOnScreen(image=Bak.erweima_png_path)
             x, y = pyautogui.center(location)

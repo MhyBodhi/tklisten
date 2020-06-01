@@ -1,15 +1,17 @@
-import time
+import time,os
 import base64
 import sqlite3
 import re
 import emoji
 import pygame
 
-from bak.gif import gif
+#from bak.gif import gif
 from bak.mp3 import mp3
 from bak.png import png
+from bak.bg_datas import datas
 
 class Bak():
+    files = ["bg/bg0" + str(i) + ".png" for i in range(50)]
     file_img_path = ""
     erweima_png_path = ""
     file_mp3_path = "edward.mp3"
@@ -29,12 +31,19 @@ class Bak():
     #             filepy.write("{reg}= '{data}'".format(reg=reg,data=data.decode()))
 
     @staticmethod
-    def py_data_file(file,data_py):
-
-        if file.endswith("gif"):
-            with open(file, "wb") as f:
-                f.write(base64.b64decode(gif))
-            Bak.file_img_path = file
+    def py_data_file(file):
+        def bg():
+            if not os.path.exists("bg"):
+                os.mkdir("bg")
+            for fil in Bak.files:
+                with open(fil, "wb") as f:
+                    f.write(base64.b64decode(datas[fil]))
+        if file == "bg":
+            bg()
+        #if file.endswith("gif"):
+        #    with open(file, "wb") as f:
+        #        f.write(base64.b64decode(gif))
+        #    Bak.file_img_path = file
         if file.endswith("mp3"):
             with open(file, "wb") as f:
                 f.write(base64.b64decode(mp3))
@@ -82,7 +91,7 @@ class Bak():
         return Bak.regex.sub("",text)
     @staticmethod
     def play_music(q):
-        Bak.py_data_file("edward.mp3","mp3.py")
+        Bak.py_data_file("edward.mp3")
         pygame.mixer.init()
         # 加载音乐
         pygame.mixer.music.load(Bak.file_mp3_path)
