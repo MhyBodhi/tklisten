@@ -73,7 +73,7 @@ class ChatReady(BsService):
         #测试是否可用
         try:
             url = "http://www.tuling123.com/openapi/api?key={key}&info={msg}".format(key=self.get_tuling_api,msg="测试")
-            res = json.loads(requests.get(url=url).text)
+            res = json.loads(requests.get(url=url,timeout=5).text)
             status_code = res["code"]
             status_text = res["text"]
         except:
